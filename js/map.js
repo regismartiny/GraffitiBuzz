@@ -6,6 +6,10 @@ var map,
 //var site = "http://www.graffiti.buzz";
 var site = "http://localhost/graffiti";
 
+function $(strId) {
+    return document.getElementById(strId);
+}
+
 function getDetailedInfoData(map_info, id, gps) {
     try {
         var httpRequest = new XMLHttpRequest();
@@ -24,8 +28,8 @@ function getDetailedInfoData(map_info, id, gps) {
         //httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         //httpRequest.send("id=" + "&info=1");
     } catch (e) {
-        document.getElementById('status').style.display = "inline";
-        document.getElementById('errorLbl').innerHTML += e;
+        $('status').style.display = "inline";
+        $('errorLbl').innerHTML += e;
     }
 }
 // se houver erro ou a posição for negada, Feliz / RS
@@ -124,7 +128,7 @@ function $fn_maps() {
         size: new google.maps.Size(46, 70),
         scaledSize: new google.maps.Size(56, 90)
     };
-    map = new google.maps.Map(document.getElementById('map-wrap'), map_options);
+    map = new google.maps.Map($('map-wrap'), map_options);
     map_info = new google.maps.InfoWindow({
         maxWidth: 400,
     });
@@ -161,11 +165,11 @@ function $fn_maps() {
     var divindex, id, gpscoord, start, end;
     try {
         var divs = document.getElementsByTagName("div");
-        var wanted = document.getElementById('dom-target');
+        var wanted = $('dom-target');
         start = [].indexOf.call(wanted.parentElement.children, wanted);
-        wanted = document.getElementById('dom-target-end');
+        wanted = $('dom-target-end');
         end = [].indexOf.call(wanted.parentElement.children, wanted) + start;
-        //document.getElementById('status').style.display = "inline";
+        //$('status').style.display = "inline";
         var infos = 2;
         for (var i = start; i < end; i += infos) {
             //divindex = i;
@@ -175,9 +179,9 @@ function $fn_maps() {
             addMarker(id, gpsCoord);
         }
     } catch (e) {
-        document.getElementById('status').style.display = "inline";
-        document.getElementById('errorLbl').innerHTML += e;
-        //document.getElementById('errorLbl').innerHTML += '<br>divindex:'+divindex+'<br>divslength:'+divslength+'<br>offset:'+offset+'<br>id:'+id+'<br>gpscoord:'+gpsCoord;
+        $('status').style.display = "inline";
+        $('errorLbl').innerHTML += e;
+        //$('errorLbl').innerHTML += '<br>divindex:'+divindex+'<br>divslength:'+divslength+'<br>offset:'+offset+'<br>id:'+id+'<br>gpscoord:'+gpsCoord;
     }
     var mcOptions = {
         gridSize: 25,
