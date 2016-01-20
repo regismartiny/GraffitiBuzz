@@ -3,8 +3,8 @@ var map,
     map_lng,
     clusters = [],
     getDataUrl = "/server/get_data.php";
-//var site = "http://www.graffiti.buzz";
-var site = "http://localhost/graffiti";
+var site = "http://www.graffiti.buzz";
+//var site = "http://localhost/graffiti";
 
 function $(strId) {
     return document.getElementById(strId);
