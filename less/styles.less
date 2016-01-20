@@ -1,0 +1,105 @@
+@import 'mixins.less';
+
+body{
+	margin: 0;
+	padding: 0;
+}
+a{
+	color: inherit;
+	text-decoration: none;
+}
+
+.header{
+	.dim(100%, 60px);
+	.absolute();
+	.fixed();
+	z-index: 9999;
+	top: 0px;
+	background-color: #000;
+	.logo{
+		.dim(113px, 38px);
+		.fleft();
+		background: url("../img/logo-graffiti-buzz.png") top center no-repeat;
+		margin-left: 15px;
+		margin-top: 12px;
+	}
+	.main-nav{
+		.fright();
+		.clr();
+		font-size: 14px;
+		color: #FFF;
+		.main-menu{
+			.dim(180px, 60px);
+			.fleft();
+			margin-right: 15px;
+			line-height: 60px;
+			a:first-child{
+				margin-right: 16px;
+			}
+		}
+		.login-signup{
+			.dim(130px, 60px);
+			.fleft();
+			line-height: 60px;
+			background-color: #000;
+			a:first-child{
+				margin-right: 16px;
+			}
+		}
+	}
+}
+.banner{
+	.dim(100%, 440px);
+	background: url("../img/banner.jpg") top center no-repeat;
+	.cover();
+	.fixed();
+	margin: 0;
+	padding: 0;
+	.texts-banner{
+		.dim(320px, 400px);
+		.relative();
+		left: 50%;
+		top: 40%;
+		.text-1{
+			.dim(320px, 130px);
+			.relative();
+			font-size: 29px;
+			color: #FFF;
+		}
+		.getstarted{
+			.dim(200px, 30px);
+			.relative();
+			.transition(.08s);
+			padding: 8px;
+			background: #FFF;
+			color: #000;
+			text-align: center;
+			line-height: 20px;
+			&:hover{
+				background: #EEE;
+				.transition(.08s);
+			}
+		}
+	}
+}
+
+.slogan{
+	.dim(100%, 600px);
+	.relative();
+	z-index: 4px;
+	background-color: #FFF;
+	top: 450px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	.h1-slogan{
+		text-align: center;
+		font-size: 40px;
+	}
+	.h2-slogan{
+		font-weight: normal;
+		font-size: 20px;
+		margin-top: -30px;
+		color: #CCC;
+		text-align: center;
+	}
+}

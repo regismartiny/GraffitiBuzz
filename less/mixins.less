@@ -1,0 +1,159 @@
+///////////////////////////////////
+/////////// ATALHOS ///////////////
+///////////////////////////////////
+.absolute(){position:absolute;}
+.arial(){font-family:Arial, Helvetica, sans-serif;}
+.block(){display: block;}
+.bgpos(@xy: top center){background-position: @xy};
+.bold(){font-weight:bolder;}
+.clr(){&:after {content:" ";.block;clear:both;}}
+.dim(@width: auto, @height: auto){height: @height;width: @width;}
+.fixed(){position:fixed;}
+.fleft(){float:left;}
+.fright(){float:right;}
+.invisible(){display:none}
+.iblock(@vertical: top){display: inline-block;vertical-align: @vertical;}
+.italic(){font-style:italic;}
+.justify(){text-align:justify;&:after{content:'';display:inline-block;width:100%;}}
+.lower(){text-transform:lowercase;}
+.limiter(){width: @min-width; margin: 0 auto; }
+.nofocus(){&:focus { outline: none;}}
+.norepeat(){background-repeat: no-repeat;}
+.normal(){font-style:normal; font-weight:normal;}
+.notext(){text-indent: -9999px;font-size: 0;line-height: 0;}
+.pie(){ behavior: url(../htc/pie.htc); zoom:1; }
+.place(@color){&::-webkit-input-placeholder {color: @color;}&:-moz-placeholder {color: @color;}}
+.pointer(){cursor:pointer;}
+.postl(@top,@left){.absolute;top:@top;left:@left;}
+.postr(@top,@right){.absolute;top:@top;right:@right;}
+.posbl(@bottom,@left){.absolute;bottom:@bottom;left:@left;}
+.posbr(@bottom,@right){.absolute;bottom:@bottom;right:@right;}
+.relative(){position:relative;}
+.repeat(){background-repeat: repeat;}
+.tshadow(@color: #000){text-shadow: 0 1px 0 @color;}
+.upper(){text-transform:uppercase;}
+.visible(){display:block}
+///////////////////////////////////
+///////////// FONTS ///////////////
+///////////////////////////////////
+.berlin-bold(){ font-family: 'berlin-sans-fb-demi-bold'; }
+///////////////////////////////////
+/////////// COLORS ////////////////
+///////////////////////////////////
+.default(){ background-color: @default-bgcolor; }
+.danger(){ background-color: @danger-bgcolor; }
+.info(){ background-color: @info-bgcolor; }
+.primary(){ background-color: @primary-bgcolor; }
+.success(){ background-color: @success-bgcolor; }
+.warning(){ background-color: @warning-bgcolor; }
+///////////////////////////////////
+/////////// MIXINS ////////////////
+///////////////////////////////////
+.background-clip(@argument: padding-box) {
+	-moz-background-clip: @argument;
+	-webkit-background-clip: @argument;
+	background-clip: @argument;
+}
+.border-radius(@width:50%){
+	-webkit-border-radius: @width;
+	-moz-border-radius: @width;
+	border-radius: @width;
+	.pie();
+}
+.box-shadow(@arguments) {
+	-webkit-box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	box-shadow: @arguments;
+	.pie();
+}
+.box-sizing(@sizing: border-box) {
+	-ms-box-sizing: @sizing;
+	-moz-box-sizing: @sizing;
+	-webkit-box-sizing: @sizing;
+	box-sizing: @sizing;
+}
+.drop-shadow(...) {
+	-webkit-box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	box-shadow: @arguments;
+	.pie();
+}
+.gradient(@start: #EEE, @stop: #FFF) {
+	background: @start;
+	background: -webkit-linear-gradient(top, @start 0%,@stop 100%);
+	background:    -moz-linear-gradient(top, @start 0%, @stop 100%);
+	background:     -ms-linear-gradient(top, @start 0%,@stop 100%);
+	background:        -webkit-gradient(linear, left top, left bottom, color-stop(0%,@start), color-stop(100%,@stop));
+	background:      -o-linear-gradient(top, @start 0%,@stop 100%);
+	background:         linear-gradient(to bottom, @start 0%,@stop 100%);
+	-pie-background:    linear-gradient( @start, @stop);
+	.pie();
+}
+.inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @spread: 0, @alpha: 0.4) {
+	-webkit-box-shadow: inset @horizontal @vertical @blur @spread rgba(0, 0, 0, @alpha);
+	-moz-box-shadow: inset @horizontal @vertical @blur @spread rgba(0, 0, 0, @alpha);
+	box-shadow: inset @horizontal @vertical @blur @spread rgba(0, 0, 0, @alpha);
+}
+.opacity(@opacity: 0.5) {
+	-webkit-opacity: @opacity;
+	-khtml-opacity: @opacity;
+	-moz-opacity: @opacity;
+	opacity: @opacity;
+	@opperc: @opacity * 100;
+	-ms-filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opperc})";
+	filter: ~"alpha(opacity=@{opperc})";
+}
+.rgba(@alpha:0.5,@red:0,@green:0,@blue:0){
+	background-color: rgb(@red, @green, @blue);
+	background-color: rgba(@red, @green, @blue, @alpha);
+	-pie-background: rgba(@red, @green, @blue, @alpha);
+	.pie();
+}
+.rotate(@deg:90deg){
+	.rotateZ(@deg);
+}
+.rotateX(@deg:90deg){
+	.transform(rotateX(@deg));
+}
+.rotateY(@deg:90deg){
+	.transform(rotateY(@deg));
+}
+.rotateZ(@deg:90deg){
+	.transform(rotateZ(@deg));
+}
+.scale(@ratio:1.5){
+	.transform(scale(@ratio));
+}
+.tab-focus(){
+	outline: thin dotted #333;
+	outline: 5px auto -webkit-focus-ring-color;
+	outline-offset: -2px;
+}
+.transform(...) {
+	-webkit-transform: @arguments;
+	-moz-transform: @arguments;
+	-o-transform: @arguments;
+	-ms-transform: @arguments;
+	transform: @arguments;
+}
+.transition(@duration:0.2s, @ease:ease-in-out, @property: all) {
+	-webkit-transition: @property @duration @ease;
+	-moz-transition: @property @duration @ease;
+	-o-transition: @property @duration @ease;
+	transition: @property @duration @ease;
+}
+.translate(@x:0, @y:0) {
+	.transform(translate(@x, @y));
+}
+.user-select(@argument: none) {
+	-webkit-user-select: @argument;
+	-moz-user-select: @argument;
+	-ms-user-select: @argument;
+	-o-user-select: @argument;
+	user-select: @argument;
+}
+.cover(){
+    background-size: cover;
+    background-position: 50% 0%;
+    -ms-behavior: url(../../../../../../../../appmurialdo/assets/htc/backgroundsize.min.htc);
+}
