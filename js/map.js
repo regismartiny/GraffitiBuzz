@@ -64,8 +64,9 @@ function addMarkers(data) {
 
 
 
-function getDetailedInfoData(map_info, id) {
+function getDetailedInfoData(id, map_info) {
     var url = site + dataUrl + "?id=" + id + "&info=1";
+    console.log(url);
     get(url, setDetailedInfoData);
 }
 
@@ -214,7 +215,7 @@ function addMarker(id, gps) {
         map_info.setContent(infowindow);
         map_info.open(map, marker);
         mapInfo = map_info;
-        getDetailedInfoData(id);
+        getDetailedInfoData(id, map_info);
     });
 }
 /*
