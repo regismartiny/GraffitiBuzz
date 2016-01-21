@@ -50,7 +50,7 @@ function initMap() {
 function $fn_erros() {
     map_lat = -29.4550665;
     map_lng = -51.3054748;
-    $fn_maps();
+    $fn_maps(2);
 }
 // se der tudo certo, mapa baseado na localização
 function $fn_posicao(e) {
@@ -59,10 +59,10 @@ function $fn_posicao(e) {
     $fn_maps();
 }
 // detalhes do mapa
-function $fn_maps() {
+function $fn_maps(zoom) {
     var map_options = {
         // How zoomed in you want the map to start at (always required)
-        zoom: 11,
+        zoom: zoom || 11,
         scrollwheel: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: new google.maps.LatLng(map_lat, map_lng),
@@ -143,6 +143,7 @@ function $fn_maps() {
     });
     google.maps.event.addListener(map, 'idle', function() {
         var bounds = map.getBounds();
+        console.log("bounds: " + bounds);
         // Call you server with ajax passing it the bounds
         // In the ajax callback delete the current markers and add new markers
         // With the new list of markers you can remove the current markers (marker.setMap(null)) 
