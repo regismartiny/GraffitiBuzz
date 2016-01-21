@@ -75,11 +75,8 @@
     <div id="errorLbl"></div>
   </div>
 
-<?php
-if (!isset($_GET['nomap'])) {
-    include_once "server/query_db.php";
-  }
-?>
+<div id="map-wrap" style="width:1200px;height:500px"><p>Pesquisando as artes mais próximas de você...</p></div>
+
 <script src="js/exif.js"></script>
 <script src="js/upload.js"></script>
 <script src="js/cluster_maps.js"></script>

@@ -2,36 +2,86 @@ var map,
     map_lat,
     map_lng,
     clusters = [],
-    getDataUrl = "/server/get_data.php";
-var site = "http://www.graffiti.buzz";
-//var site = "http://localhost/graffiti";
+    mapInfo,
+    dataUrl = "/server/get_data.php";
+//var site = "http://www.graffiti.buzz";
+var site = "http://localhost/graffiti";
+
+
 
 function $(strId) {
-    return document.getElementById(strId);
+    var type = strId.charAt(0);
+    if (type == "#")
+        return document.getElementById(strId.substring(1, strId.length));
+    else
+        return document.getElementsByTagName(strId);
 }
 
-function getDetailedInfoData(map_info, id, gps) {
+
+function get(url, callback) {
     try {
         var httpRequest = new XMLHttpRequest();
         httpRequest.onreadystatechange = function() {
             if (httpRequest.readyState === 4) { // request is done
                 if (httpRequest.status === 200) { // successfully
-                    var o = JSON.parse(httpRequest.responseText);
-                    var infowindow = "<div align=center >Id: " + id + "<br>Arquivo: " + o.FileName + "<br>GPS:" + gps + "<br>Artista:" + o.Artist + "<br>Tamanho:" + o.FileSize + "bytes" + "<br>Data Upload:" + o.UploadTime + "<br>Data Criação:" + o.CreationTime + "<br>Orientação:" + o.Orientation + "<br>Largura:" + o.ImageWidth + "<br>Altura:" + o.ImageHeight + "<br>Make:" + o.Make + "<br>Software:" + o.Software + "<br>Modelo:" + o.Model + "<br>Flash:" + o.Flash + "<br>SceneCaptureType:" + o.SceneCaptureType + "<br><a href=" + site + getDataUrl + "?id=" + id + "><input type=image src=data:image/jpg;base64," + o.Thumbnail + "></a></div>";
-                    map_info.setContent(infowindow);
+                    //console.log("Resposta: |" + httpRequest.responseText + "|");
+                    callback(httpRequest.responseText);
                 }
             }
         };
-        httpRequest.open('GET', site + getDataUrl + "?id=" + id + "&info=1", true); //true = does not wait until complete
-        httpRequest.send();
-        //httpRequest.open('POST', site + getDataUrl, true); //true = does not wait until complete
-        //httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        //httpRequest.send("id=" + "&info=1");
     } catch (e) {
-        $('status').style.display = "inline";
-        $('errorLbl').innerHTML += e;
+        console.log("Error fetching data: " + e);
+    }
+    httpRequest.open('GET', url, true); //true = does not wait until complete
+    httpRequest.send();
+}
+
+
+
+
+function processMarkers() {
+    var url = site + dataUrl + "?id=*" + "&info=3";
+    get(url, addMarkers);
+}
+
+function addMarkers(data) {
+    if (data != null) {
+        var o = JSON.parse(data); //{ id: xx, gpsCoord: xx}
+        if (o != null) {
+            o.forEach(function(element) {
+                console.log(element.id + ", " + element.gpsCoord);
+                addMarker(element.id, element.gpsCoord);
+            });
+
+        }
+        var mcOptions = {
+            gridSize: 25,
+            maxZoom: 15
+        };
+        var markerCluster = new MarkerClusterer(map, clusters, mcOptions);
     }
 }
+
+
+
+function getDetailedInfoData(map_info, id) {
+    var url = site + dataUrl + "?id=" + id + "&info=1";
+    get(url, setDetailedInfoData);
+}
+
+function setDetailedInfoData(data) {
+    if (data != null) {
+        var o = JSON.parse(data);
+        if (o != null) {
+            var infowindow = "<div align=center>Id: " + o.Id + "<br>Arquivo: " + o.FileName + "<br>GPS:" + o.GpsCoord + "<br>Artista:" + o.Artist + "<br>Tamanho:" + o.FileSize + "bytes" + "<br>Data Upload:" + o.UploadTime + "<br>Data Criação:" + o.CreationTime + "<br>Orientação:" + o.Orientation + "<br>Largura:" + o.ImageWidth + "<br>Altura:" + o.ImageHeight + "<br>Make:" + o.Make + "<br>Software:" + o.Software + "<br>Modelo:" + o.Model + "<br>Flash:" + o.Flash + "<br>SceneCaptureType:" + o.SceneCaptureType + "<br><a href=" + site + dataUrl + "?id=" + o.Id + "><input type=image src=data:image/jpg;base64," + o.Thumbnail + "></a></div>";
+            map_info.setContent(infowindow);
+        }
+        $('#status').style.display = "inline";
+    }
+}
+
+
+
 // se houver erro ou a posição for negada, Feliz / RS
 function $fn_erros() {
     map_lat = -29.4550665;
@@ -123,12 +173,8 @@ function $fn_maps() {
         }]
     };
 
-    var image = {
-        url: site + '/img/graffiti_pin.png',
-        size: new google.maps.Size(46, 70),
-        scaledSize: new google.maps.Size(56, 90)
-    };
-    map = new google.maps.Map($('map-wrap'), map_options);
+
+    map = new google.maps.Map($('#map-wrap'), map_options);
     map_info = new google.maps.InfoWindow({
         maxWidth: 400,
     });
@@ -139,56 +185,64 @@ function $fn_maps() {
         // With the new list of markers you can remove the current markers (marker.setMap(null)) 
         // that are on the map and add the new ones (marker.setMap(map)).
     });
-
-    function addMarker(id, gps) {
-        var geograficas_ = gps.split(",");
-        var map_coords = new google.maps.LatLng(parseFloat(geograficas_[0]), parseFloat(geograficas_[1]));
-        var marker = new google.maps.Marker({
-            map: map,
-            position: map_coords,
-            title: id,
-            animation: google.maps.Animation.DROP,
-            icon: image
-        });
-        // agrupar marcadores
-        clusters.push(marker);
-        // ao clicar no pin do mapa, exibir info
-        google.maps.event.addListener(marker, 'click', function() {
-            var infowindow = "<div align=center>Id: " + id + "<br>GPS: " + gps + "<br><input type=image src=" + site + "/img/loading.png></div>";
-            map.setCenter(marker.getPosition());
-            map_info.setContent(infowindow);
-            map_info.open(map, marker);
-            getDetailedInfoData(map_info, id, gps);
-        });
-    }
-    // get data from html
-    var divindex, id, gpscoord, start, end;
-    try {
-        var divs = document.getElementsByTagName("div");
-        var wanted = $('dom-target');
-        start = [].indexOf.call(wanted.parentElement.children, wanted);
-        wanted = $('dom-target-end');
-        end = [].indexOf.call(wanted.parentElement.children, wanted) + start;
-        //$('status').style.display = "inline";
-        var infos = 2;
-        for (var i = start; i < end; i += infos) {
-            //divindex = i;
-            id = divs[i + 1].textContent;
-            gpsCoord = divs[i + 2].textContent;
-            //alert("i:"+i + "\nid:"+ id + "\ngps:" + gpsCoord);
-            addMarker(id, gpsCoord);
-        }
-    } catch (e) {
-        $('status').style.display = "inline";
-        $('errorLbl').innerHTML += e;
-        //$('errorLbl').innerHTML += '<br>divindex:'+divindex+'<br>divslength:'+divslength+'<br>offset:'+offset+'<br>id:'+id+'<br>gpscoord:'+gpsCoord;
-    }
-    var mcOptions = {
-        gridSize: 25,
-        maxZoom: 15
-    };
-    var markerCluster = new MarkerClusterer(map, clusters, mcOptions);
+    processMarkers();
 }
+
+
+
+function addMarker(id, gps) {
+    var geograficas_ = gps.split(",");
+    var map_coords = new google.maps.LatLng(parseFloat(geograficas_[0]), parseFloat(geograficas_[1]));
+    var image = {
+        url: site + '/img/graffiti_pin.png',
+        size: new google.maps.Size(46, 70),
+        scaledSize: new google.maps.Size(56, 90)
+    };
+    var marker = new google.maps.Marker({
+        map: map,
+        position: map_coords,
+        title: id,
+        animation: google.maps.Animation.DROP,
+        icon: image
+    });
+    // agrupar marcadores
+    clusters.push(marker);
+    // ao clicar no pin do mapa, exibir info
+    google.maps.event.addListener(marker, 'click', function() {
+        var infowindow = "<div align=center>Id: " + id + "<br>GPS: " + gps + "<br><input type=image src=" + site + "/img/loading.png></div>";
+        map.setCenter(marker.getPosition());
+        map_info.setContent(infowindow);
+        map_info.open(map, marker);
+        mapInfo = map_info;
+        getDetailedInfoData(id);
+    });
+}
+/*
+// get data from html
+var divindex, id, gpscoord, start, end;
+try {
+    var divs = $('div');
+    var wanted = $('#dom-target');
+    start = [].indexOf.call(wanted.parentElement.children, wanted);
+    wanted = $('#dom-target-end');
+    end = [].indexOf.call(wanted.parentElement.children, wanted) + start;
+    //$('status').style.display = "inline";
+    var infos = 2;
+    for (var i = start; i < end; i += infos) {
+        //divindex = i;
+        id = divs[i + 1].textContent;
+        gpsCoord = divs[i + 2].textContent;
+        //alert("i:" + i + "\nid:" + id + "\ngps:" + gpsCoord);
+        addMarker(id, gpsCoord);
+    }
+} catch (e) {
+    $('#status').style.display = "inline";
+    $('#errorLbl').innerHTML += e;
+    //$('errorLbl').innerHTML += '<br>divindex:'+divindex+'<br>divslength:'+divslength+'<br>offset:'+offset+'<br>id:'+id+'<br>gpscoord:'+gpsCoord;
+} */
+
+
+
 
 function initMap() {
     navigator.geolocation.getCurrentPosition($fn_posicao, $fn_erros);
