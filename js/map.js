@@ -4,18 +4,18 @@ var map,
     map_lng,
     clusters = [],
     pinImagePath = '/img/graffiti_pin.png',
-    dataUrl = "/server/get_data.php";
-//var site = "http://www.graffiti.buzz";
-var site = "http://localhost/graffiti";
+    serverGetDataPath = "/server/get_data.php";
+var site = "http://www.graffiti.buzz";
+//var site = "http://localhost/graffiti";
 
 
 ///////////////utility functions/////////////////////////////////////////////////////
-function $(strId) {
-    var type = strId.charAt(0);
+function $(str) {
+    var type = str.charAt(0);
     if (type == "#")
-        return document.getElementById(strId.substring(1, strId.length));
+        return document.getElementById(str.substring(1, str.length));
     else
-        return document.getElementsByTagName(strId);
+        return document.getElementsByTagName(str);
 }
 
 
@@ -30,11 +30,11 @@ function get(url, callback) {
                 }
             }
         };
+        httpRequest.open('GET', url, true); //true = does not wait until complete
+        httpRequest.send();
     } catch (e) {
         console.log("Error fetching data: " + e);
     }
-    httpRequest.open('GET', url, true); //true = does not wait until complete
-    httpRequest.send();
 }
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,75 +153,81 @@ function $fn_maps(zoom) {
 }
 
 function fetchMarkers() {
-    var url = site + dataUrl + "?id=*" + "&info=3";
+    var url = site + serverGetDataPath + "?id=*" + "&info=3";
     get(url, addMarkers);
 }
 
 function addMarkers(data) {
     if (data != null) {
+        try {
+            var o = JSON.parse(data); //{ id: xx, gpsCoord: xx}
 
-        var o = JSON.parse(data); //{ id: xx, gpsCoord: xx}
+            if (o != null) {
 
-        if (o != null) {
+                var image = {
+                    url: site + pinImagePath,
+                    size: new google.maps.Size(46, 70),
+                    scaledSize: new google.maps.Size(56, 90)
+                };
 
-            var image = {
-                url: site + pinImagePath,
-                size: new google.maps.Size(46, 70),
-                scaledSize: new google.maps.Size(56, 90)
+                o.forEach(function(element) {
+
+                    var id = element.id;
+                    var gps = element.gpsCoord;
+                    console.log(element.id + ", " + element.gpsCoord);
+
+                    var geograficas_ = gps.split(",");
+                    var map_coords = new google.maps.LatLng(parseFloat(geograficas_[0]), parseFloat(geograficas_[1]));
+
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: map_coords,
+                        title: id,
+                        animation: google.maps.Animation.DROP,
+                        icon: image
+                    });
+                    // agrupar marcadores
+                    clusters.push(marker);
+                    // ao clicar no pin do mapa, exibir info
+                    google.maps.event.addListener(marker, 'click', function() {
+                        map.setCenter(marker.getPosition());
+                        var infowindow = "<div align=center>Id: " + id + "<br>GPS: " + gps + "<br><input type=image src=" + site + "/img/loading.png></div>";
+                        map_info.setContent(infowindow);
+                        map_info.open(map, marker);
+                        fetchDetailedMarkerInfo(id);
+                    });
+                });
+
+            }
+            var mcOptions = {
+                gridSize: 25,
+                maxZoom: 15
             };
-
-            o.forEach(function(element) {
-
-                var id = element.id;
-                var gps = element.gpsCoord;
-                console.log(element.id + ", " + element.gpsCoord);
-
-                var geograficas_ = gps.split(",");
-                var map_coords = new google.maps.LatLng(parseFloat(geograficas_[0]), parseFloat(geograficas_[1]));
-
-                var marker = new google.maps.Marker({
-                    map: map,
-                    position: map_coords,
-                    title: id,
-                    animation: google.maps.Animation.DROP,
-                    icon: image
-                });
-                // agrupar marcadores
-                clusters.push(marker);
-                // ao clicar no pin do mapa, exibir info
-                google.maps.event.addListener(marker, 'click', function() {
-                    map.setCenter(marker.getPosition());
-                    var infowindow = "<div align=center>Id: " + id + "<br>GPS: " + gps + "<br><input type=image src=" + site + "/img/loading.png></div>";
-                    map_info.setContent(infowindow);
-                    map_info.open(map, marker);
-                    fetchDetailedMarkerInfo(id);
-                });
-            });
-
+            var markerCluster = new MarkerClusterer(map, clusters, mcOptions);
+        } catch (e) {
+            console.log("Error: " + e);
         }
-        var mcOptions = {
-            gridSize: 25,
-            maxZoom: 15
-        };
-        var markerCluster = new MarkerClusterer(map, clusters, mcOptions);
     }
 }
 
 
 
 function fetchDetailedMarkerInfo(id) {
-    var url = site + dataUrl + "?id=" + id + "&info=1";
+    var url = site + serverGetDataPath + "?id=" + id + "&info=1";
     get(url, setDetailedMarkerInfo);
 }
 
 function setDetailedMarkerInfo(data) {
     if (data != null) {
-        var o = JSON.parse(data);
-        if (o != null) {
-            var infowindow = "<div align=center>Id: " + o.Id + "<br>Arquivo: " + o.FileName + "<br>GPS:" + o.GpsCoord + "<br>Artista:" + o.Artist + "<br>Tamanho:" + o.FileSize + "bytes" + "<br>Data Upload:" + o.UploadTime + "<br>Data Criação:" + o.CreationTime + "<br>Orientação:" + o.Orientation + "<br>Largura:" + o.ImageWidth + "<br>Altura:" + o.ImageHeight + "<br>Make:" + o.Make + "<br>Software:" + o.Software + "<br>Modelo:" + o.Model + "<br>Flash:" + o.Flash + "<br>SceneCaptureType:" + o.SceneCaptureType + "<br><a href=" + site + dataUrl + "?id=" + o.Id + "><input type=image src=data:image/jpg;base64," + o.Thumbnail + "></a></div>";
-            map_info.setContent(infowindow);
+        try {
+            var o = JSON.parse(data);
+            if (o != null) {
+                var infowindow = "<div align=center>Id: " + o.Id + "<br>Arquivo: " + o.FileName + "<br>GPS:" + o.GpsCoord + "<br>Artista:" + o.Artist + "<br>Tamanho:" + o.FileSize + "bytes" + "<br>Data Upload:" + o.UploadTime + "<br>Data Criação:" + o.CreationTime + "<br>Orientação:" + o.Orientation + "<br>Largura:" + o.ImageWidth + "<br>Altura:" + o.ImageHeight + "<br>Make:" + o.Make + "<br>Software:" + o.Software + "<br>Modelo:" + o.Model + "<br>Flash:" + o.Flash + "<br>SceneCaptureType:" + o.SceneCaptureType + "<br><a href=" + site + serverGetDataPath + "?id=" + o.Id + "&info=2><input type=image src=data:image/jpg;base64," + o.Thumbnail + "></a></div>";
+                map_info.setContent(infowindow);
+            }
+        } catch (e) {
+            console.log("Error: " + e);
         }
-        $('#status').style.display = "inline";
     }
 }
 
