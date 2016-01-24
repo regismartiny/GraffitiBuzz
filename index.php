@@ -52,16 +52,76 @@
   <h1 class="h1-slogan">STREET ART IS EVERYWHERE</h1>
   <h2 class="h2-slogan"><a href="#">#supportyourlocalartists</a></h2>
 </section>
+<div id="map-wrap" class="map-wrap"></div>
+<div class="infos-map">
+  <div class="search">
+      <input type="text" placeholder="Search for countries, states, cities...">
+      <div class="divisor-search"></div>
+      <div class="button-search"></div>
+  </div>
+  <div class="closest-art">
+    <p class="title">What's close to me?</p>
+    <a href="#" class="see-more">+ see more</a>
+    <div class="image-closest"></div>
+    <p class="address-closest">172 Boundary Street <br/> Brisbane City, QLD, Australia</p>
+  </div>
+  <div class="recent-arts">
+    <div class="header-recent-arts">
+      <p class="title">Recent Uploads</p>
+      <a href="#" class="see-more">+ see more</a>
+    </div>
+    <div class="recent-art">
+      <p><a href="#" class="title">The Miracle</a><a href="#" class="author">by Pork</a><a href="#" class="time">5min</a><p>
+    </div>
+    <div class="recent-art">
+      <p><a href="#" class="title">The Miracle</a><a href="#" class="author">by Pork</a><a href="#" class="time">5min</a><p>
+    </div>
+    <div class="recent-art">
+      <p><a href="#" class="title">The Miracle</a><a href="#" class="author">by Pork</a><a href="#" class="time">5min</a><p>
+    </div>
+  </div>
+  <form enctype="multipart/form-data" id="file-form" action="server/upload_handler.php" method="POST" class="uploadContainer">
+    <!-- MAX_FILE_SIZE deve preceder o campo input -->
+    <input type="hidden" name="MAX_FILE_SIZE" value="4404019" />
+    <input type="button" id="fs-button" class="actionButton" />
+    <div class="bgAction"></div>
+    <p class="text">UPLOAD AN ART!</p>
+    <input type="file" id="file-select" name="photos[]" style="display: none;" multiple />
+    <input type="submit" id="upload-button" style="display: none;" value="Enviar" />
+  </form>
+  <br>
+  <div id="status" style="display: none;">
+    <div id="statusLbl">Status:</div>
+    <progress id="pgBar" value=0 max=100>Progresso:</progress>
+    <div id="approvedLbl"></div>
+    <div id="errorLbl"></div>
+  </div>
+  <div class="countryRanking">
+    <div class="headerCountryRanking">
+      <a href="#" class="title">Recent Uploads</a>
+      <a href="#" class="quantity">+ see more</a>
+    </div>
+    <div class="recent-art">
+      <p><a href="#" class="title">The Miracle</a><a href="#" class="author">by Pork</a><a href="#" class="time">5min</a><p>
+    </div>
+    <div class="recent-art">
+      <p><a href="#" class="title">The Miracle</a><a href="#" class="author">by Pork</a><a href="#" class="time">5min</a><p>
+    </div>
+    <div class="recent-art">
+      <p><a href="#" class="title">The Miracle</a><a href="#" class="author">by Pork</a><a href="#" class="time">5min</a><p>
+    </div>
+  </div>
+</div>
 <div
   class="fb-like"
   data-share="true"
   data-width="450"
   data-show-faces="true">
 </div>
-
+<!--
 <br>
   <form enctype="multipart/form-data" id="file-form" action="server/upload_handler.php" method="POST">
-    <!-- MAX_FILE_SIZE deve preceder o campo input -->
+    <!-- MAX_FILE_SIZE deve preceder o campo input
     <input type="hidden" name="MAX_FILE_SIZE" value="4404019" />
     <input type="button" id="fs-button" value="Selecionar fotos para envio" />
     <input type="file" id="file-select" name="photos[]" style="display: none;" multiple />
@@ -74,6 +134,8 @@
     <div id="approvedLbl"></div>
     <div id="errorLbl"></div>
   </div>
+
+-->
 
 <div id="map-wrap" style="width:1200px;height:500px"><p>Pesquisando as artes mais próximas de você...</p></div>
 

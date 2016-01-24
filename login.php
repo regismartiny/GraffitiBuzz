@@ -1,4 +1,6 @@
 <?php
+$site = "http://www.graffiti.buzz";
+
 session_start();
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -10,8 +12,8 @@ $fb = new Facebook\Facebook([
   ]);
 
 $helper = $fb->getRedirectLoginHelper();
-$permissions = ['email', 'user_likes']; // optional
-$loginUrl = $helper->getLoginUrl('http://www.graffiti.buzz/login-callback.php', $permissions);
+$permissions = ['email', 'user_birthday', 'user_location']; // optional
+$loginUrl = $helper->getLoginUrl($site.'/login-callback.php', $permissions);
 
 echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
 ?>
