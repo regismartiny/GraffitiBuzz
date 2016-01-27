@@ -5,7 +5,7 @@ var map,
     clusters = [],
     pinImagePath = '/img/graffiti_pin.png',
     serverGetDataPath = "/server/get_data.php";
-var site = "http://www.graffiti.buzz";
+var site = "https://www.graffiti.buzz";
 //var site = "http://localhost/graffiti";
 
 

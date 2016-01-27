@@ -28,7 +28,7 @@
    }(document, 'script', 'facebook-jssdk'));
 </script>
 <header class="header">
-  <a class="logo" href="http://www.graffiti.buzz"></a>
+  <a class="logo" href="#"></a>
   <nav class="main-nav">
     <div class="main-menu">
       <a href="">The project</a>
@@ -143,7 +143,7 @@
 <script src="js/upload.js"></script>
 <script src="js/cluster_maps.js"></script>
 <script src="js/map.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRtWqPFIfu2Jepv8uVF2LLGToTHnSXRAM&signed_in=true&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCdKPG9XuYBoKeMEhmxv2Eqb0aIMQtDF8&signed_in=true&callback=initMap"></script>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- Bloco 1 -->
 <ins class="adsbygoogle"
