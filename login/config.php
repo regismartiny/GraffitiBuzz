@@ -11,7 +11,7 @@
 
 return
 array(
-	"base_url" => "http://www.graffiti.buzz/login/login-callback.php",
+	"base_url" => "https://www.graffiti.buzz/login/login-callback.php",
 
 	"providers" => array(
 		// openid providers
